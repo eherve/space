@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="befd13882d7db66b03e7fc85c5c84e35ed917f53" datatype="html">
+        <source>ELEVATORS</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/dashboard.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f1b6fe6938aea42f3c1b947ed2b905edf342c188" datatype="html">
+        <source>Breakdown Rate</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/dashboard.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="afde48975dd1c7b23e6a41ba7c4d41fd93f7d45f" datatype="html">
+        <source>Availability Rate</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/dashboard.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9d57a7eaf254a52bf2ecb71fcd2bffd8d67a8d7b" datatype="html">
+        <source>PARKING DOORS</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/dashboard/dashboard.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="65cc4ab3b4c438e07c89be2b677d08369fb62da2" datatype="html">
+        <source>Welcome</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">login page welcome message</note>
+      </trans-unit>
+      <trans-unit id="2131dd18e024a7662b736d0374697fc0a8908bd3" datatype="html">
+        <source>
+            Username is required
+          </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">login username required error</note>
+      </trans-unit>
+      <trans-unit id="6aa718b685a4471ec95fde0b37fedda6a26f8110" datatype="html">
+        <source>
+            Password is required
+          </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <note priority="1" from="description">login password required error</note>
+      </trans-unit>
+      <trans-unit id="287d3301a32a65a1b31116bda5d3a6463158c42a" datatype="html">
+        <source>Sign in</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <note priority="1" from="description">login sign in button</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

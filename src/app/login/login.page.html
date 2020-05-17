@@ -1,0 +1,25 @@
+<div class="content" fxLayout="row" fxLayoutAlign="center center">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div fxLayout="column" fxLayoutAlign="center center">
+      <h1 translate>welcome</h1>
+      <mat-form-field>
+        <mat-label translate>username</mat-label>
+        <input formControlName="username" type="text" matInput autocomplete="username">
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="formGroup.controls.username.hasError('required')" translate>required.username</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label translate>password</mat-label>
+        <input formControlName="password" type="password" matInput autocomplete="current-password">
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-error *ngIf="formGroup.controls.password.hasError('required')" translate>required.password</mat-error>
+      </mat-form-field>
+      <button [disabled]="loading" mat-stroked-button translate>sign-in</button>
+      <div fxLayoutAlign="center center" [style.position]="'relative'" [style.width.%]="100">
+        <mat-error *ngIf="error" translate [style.position]="'absolute'" [style.top.px]="0">
+          {{error}}
+        </mat-error>
+      </div>
+    </div>
+  </form>
+</div>

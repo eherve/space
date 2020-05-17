@@ -1,0 +1,39 @@
+<div fxLayout="row">
+  <div class="info" *ngIf="selected">
+    {{selected.name}}
+  </div>
+  <div #container class="container">
+  </div>
+</div>
+<!-- <div #container class="container" (click)="goTo($event)"> -->
+
+<!-- <svg [style.height.%]="100" [style.width.%]="100">
+
+    <ellipse cx="50%" cy="50%" fill="none" rx="450" ry="225" stroke="white" stroke-width="0.5" stroke-opacity="0.6">
+    <circle cx="50%" cy="50%" fill="none" r="424" stroke="white" stroke-width="0.5" stroke-opacity="0.6"></circle>
+    </ellipse>
+    <g class="rotate" x="calc(50% - 25px - 300px)" y="calc(50% - 25px - 300px)">
+      <image class="spin" [attr.xlink:href]="'assets/images/planet-m-1.png'" height="50" width="50"
+        x="calc(50% - 25px - 300px)" y="calc(50% - 25px - 300px)" />
+    </g>
+    <image [attr.xlink:href]="'assets/images/sun-1.png'" height="200" width="200" x="calc(50% - 100)"
+      y="calc(50% - 100)" />
+
+
+    <circle *ngIf="destination && moves.length" [attr.cx]="destination.x" [attr.cy]="destination.y" fill="none" r="5"
+      stroke="red" stroke-width="2">
+      <animate attributeName="r" from="3" to="12" dur="1.5s" begin="0s" repeatCount="indefinite" />
+      <animate attributeName="opacity" from="0.8" to="0" dur="1.5s" begin="0s" repeatCount="indefinite" />
+    </circle>
+
+    <image [attr.xlink:href]="'assets/images/spaceship-3.png'" [attr.height]="spaceship.size.height"
+      [attr.width]="spaceship.size.width" [attr.x]="spaceship.position.x - spaceship.size.width / 2"
+      [attr.y]="spaceship.position.y - spaceship.size.height / 2"
+      [attr.transform]="'rotate(' + spaceship.rotation.degree.toFixed(2) + ', ' + spaceship.position.x+ ', ' + spaceship.position.y + ')'" />
+
+
+  </svg> -->
+
+<!-- <canvas id="canvas" #canvas ></canvas> -->
+
+<!-- </div> -->

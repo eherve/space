@@ -1,13 +1,42 @@
 import * as THREE from 'three';
 import { propertyMap } from 'model-mapper';
 
+
+export class Spin {
+
+  @propertyMap({ default: 0 })
+  public xSpeed = 0;
+
+  @propertyMap({ default: 0.0005 })
+  public ySpeed = 0.0005;
+
+  @propertyMap({ default: 0 })
+  public zSpeed = 0;
+
+}
+
 export abstract class Luminary {
 
   @propertyMap()
   public name: string;
 
+  @propertyMap({ default: 10 })
+  public size = 10;
+
   @propertyMap()
   public position: { x: number, y: number, z: number };
+
+  @propertyMap({ type: Spin })
+  public spin: Spin;
+
+  public setName(name: string) {
+    this.name = name;
+  }
+
+  public setSize(size: number) {
+    this.size = size;
+    this.sizeUpdated();
+  }
 
   public abstract tick(scene: THREE.Scene, camera: THREE.PerspectiveCamera, speedFactor: number);
 
@@ -19,6 +48,8 @@ export abstract class Luminary {
     this.position.y = y;
     this.position.z = z;
   }
+
+  protected abstract sizeUpdated();
 
 }
 

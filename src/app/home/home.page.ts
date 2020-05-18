@@ -12,6 +12,8 @@ import { Planet } from '../_classes/planet';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { filter } from 'rxjs/operators';
 // import * as OrbitControlsHelper from 'three-orbit-controls';
 // const OrbitControls = OrbitControlsHelper(THREE);
 
@@ -23,14 +25,21 @@ export class HomePage implements OnInit {
 
   @ViewChild('container', { static: true })
   public container: ElementRef;
-
   public selected: Luminary;
+
+  public sceneDebugControl: FormControl;
+  public sceneSpeedControl: FormControl;
+  public luminaryNameControl: FormControl;
+  public luminarySizeControl: FormControl;
+
   public spaceship: Spaceship;
   public moves = [];
   public destination: Point;
+
   private spaceshipMovingInterval: any;
   private width: number;
   private height: number;
+  private helpers: any[] = [];
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
@@ -40,13 +49,14 @@ export class HomePage implements OnInit {
   private luminaries: Luminary[] = [];
   private hover: Luminary;
 
-  constructor(private http: HttpClient) { }
+  constructor(private formBuilder: FormBuilder) { }
 
   async ngOnInit() {
     this.width = this.container.nativeElement.clientWidth;
     this.height = this.container.nativeElement.clientHeight;
-    this.init();
-    this.animate();
+    this.initFormControls();
+    this.initScene();
+    this.animateScene();
     this.container.nativeElement.addEventListener('mousemove', $event => this.onMouseMove($event), false);
     this.container.nativeElement.addEventListener('click', $event => this.onClick($event), false);
   }
@@ -83,7 +93,27 @@ export class HomePage implements OnInit {
   // init();
   // animate();
 
-  init() {
+  private initFormControls() {
+    this.sceneDebugControl = new FormControl(false, [Validators.required]);
+    this.sceneDebugControl.valueChanges
+      .subscribe(val => this.helpers.forEach(h => h.visible = val));
+    this.sceneSpeedControl = new FormControl(1, [Validators.required]);
+    this.luminaryNameControl = new FormControl('', [Validators.required]);
+    this.luminaryNameControl.valueChanges
+      .pipe(filter(() => !!this.selected))
+      .subscribe(v => this.selected.setName(v));
+    this.luminarySizeControl = new FormControl('', [Validators.required]);
+    this.luminarySizeControl.valueChanges
+      .pipe(filter(() => !!this.selected))
+      .subscribe(v => this.selected.setSize(v));
+  }
+
+  private setSelected(luminary: Luminary) {
+    this.luminaryNameControl.setValue(luminary ? luminary.name : null, { emitEvent: false });
+    this.luminarySizeControl.setValue(luminary ? luminary.size : null, { emitEvent: false });
+  }
+
+  private initScene() {
 
     // SCENE
     this.scene = new THREE.Scene();
@@ -127,12 +157,9 @@ export class HomePage implements OnInit {
     light.shadow.camera.near = 0.1;       // default
     light.shadow.camera.far = 2000;      // default
     this.scene.add(light);
-    // this.scene.add(new THREE.PointLightHelper(light, 12));
-
 
     // CONTROLS
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    // this.controls.mouseButtons = { ORBIT: 2, PAN: 0, ZOOM: 1 };
     this.controls.mouseButtons = {
       LEFT: THREE.MOUSE.PAN,
       MIDDLE: THREE.MOUSE.DOLLY,
@@ -142,34 +169,32 @@ export class HomePage implements OnInit {
     this.controls.minDistance = 1;
     this.controls.maxDistance = 2000;
     this.controls.target.set(0, 2, 0);
-    // this.controls.update();
+    this.controls.update();
 
-    // this.container.nativeElement.addEventListener('mousemove', $event => {
-    //   console.log($event);
-    //   const factor = 10;
-    //   const mX = ($event.clientX / window.innerWidth) * 2 - 1;
-    //   const mY = - ($event.clientY / window.innerHeight) * 2 + 1;
-    //   const vector = new THREE.Vector3(mX, mY, 1);
-    //   vector.unproject(this.camera);
-    //   vector.sub(this.camera.position);
-    //   this.camera.position.addVectors(this.camera.position, vector.setLength(factor));
-    //   controls.target.addVectors(controls.target, vector.setLength(factor));
-    // });
+    // HELPERS
+    const axesHelper = new THREE.AxesHelper(2000);
+    axesHelper.visible = false;
+    this.helpers.push(axesHelper);
+    this.scene.add(axesHelper);
+    const pointLightHelper = new THREE.PointLightHelper(light, 12);
+    pointLightHelper.visible = false;
+    this.helpers.push(pointLightHelper);
+    this.scene.add(pointLightHelper);
 
     // Luminaries
 
     const star = new ModelMapper(Star).map({
-      name: 'star',
+      name: 'sun',
       size: 8,
-      position: { x: 0, y: 0, z: 0 }
+      position: { x: 0, y: 0, z: 0 },
+      spin: {}
     });
     star.init(this.scene, this.camera);
     this.luminaries.push(star);
 
     const planet1 = new ModelMapper(Planet).map({
       name: 'planet-1',
-      source: 'planet1',
-      size: 4,
+      source: 'planet1', glowColor: '#0192c9', size: 4,
       orbit: { xRadius: 200, yRadius: 150 },
       spin: {}
     });
@@ -188,8 +213,7 @@ export class HomePage implements OnInit {
 
     const planet2 = new ModelMapper(Planet).map({
       name: 'planet-2',
-      source: 'planet6',
-      size: 5,
+      source: 'planet6', glowColor: '#5ebbdc', size: 5,
       orbit: { xRadius: 400, yRadius: 300, speed: 0.005 },
       spin: {}
     });
@@ -210,32 +234,36 @@ export class HomePage implements OnInit {
       name: 'planet-3',
       source: 'planet7', glowColor: '#b87540', size: 3,
       orbit: { xRadius: 100, yRadius: 75, speed: 0.05 },
-      spin: {}
+      spin: { xSpeed: 0, ySpeed: 0.02 }
     });
     planet3.init(this.scene, this.camera, star);
     this.luminaries.push(planet3);
   }
 
-  private animate() {
-    requestAnimationFrame(() => this.animate());
-
+  private animateScene() {
+    requestAnimationFrame(() => this.animateScene());
+    this.controls.update();
     this.raycaster.setFromCamera(this.mouse, this.camera);
     let hover = null;
-    this.luminaries.forEach(l => {
-      l.tick(this.scene, this.camera, 1);
+    for (const l of this.luminaries) {
+      l.tick(this.scene, this.camera, this.sceneSpeedControl ? this.sceneSpeedControl.value : 1);
       if (l.hover(this.raycaster, this.mouse)) { hover = l; }
-    });
+    }
+    this.setHover(hover);
+    this.render();
+  }
+
+  private setHover(hover: Luminary) {
     this.hover = hover;
     this.container.nativeElement.style.cursor = this.hover ? 'pointer' : 'default';
+  }
 
-    this.controls.update();
-
+  private render() {
     this.renderer.autoClear = false; // don't remove previous layer results
     this.camera.layers.set(0);
     this.renderer.render(this.scene, this.camera);
     this.renderer.autoClear = false; // don't remove previous layer results
     this.camera.layers.set(1); // point light layer
-
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -247,7 +275,7 @@ export class HomePage implements OnInit {
   }
 
   private onClick($event) {
-    this.selected = this.hover;
+    this.setSelected(this.selected = this.hover);
   }
 
   // private setHover(intersection: THREE.Intersection) {

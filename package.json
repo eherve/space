@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:app": "ng build"
+    "build:app": "ng build",
+    "publish:dev": "npx shipit dev deploy"
   },
   "private": true,
   "dependencies": {

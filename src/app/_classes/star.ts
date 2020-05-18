@@ -3,12 +3,6 @@ import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflar
 import { propertyMap } from 'model-mapper';
 import { Luminary } from './luminary';
 
-interface ISurfaceMesh extends THREE.Mesh {
-  xStep?: number;
-  yStep?: number;
-  zStep?: number;
-}
-
 interface ILensFlare extends THREE.Mesh {
   texture?: THREE.Texture;
   m?: THREE.Material;
@@ -119,13 +113,10 @@ export class Star extends Luminary {
   // static lensflare3 = new THREE.TextureLoader().load('/assets/images/stars/lensflares/lensflare3.png');
   // static lensflare_1 = new THREE.TextureLoader().load('/assets/images/stars/lensflares/lensflare-1.png');
 
-  @propertyMap({ default: 12 })
-  public size = 12;
-
   @propertyMap({ default: 0xffffff })
   public color = 0xffffff;
 
-  private surfaces: ISurfaceMesh[];
+  private surface: THREE.Mesh;
   private lensflares: ILensFlare[];
 
   public init(scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
@@ -138,17 +129,23 @@ export class Star extends Luminary {
   }
 
   public tick(scene: THREE.Scene, camera: THREE.PerspectiveCamera, speedFactor = 1) {
-    this.updateSurface();
+    if (this.spin) { this.tickSpin(speedFactor); }
     // this.updateLensFlares(scene, camera);
   }
 
-  hover(raycaster: THREE.Raycaster, mouse: THREE.Vector2): boolean {
+  public hover(raycaster: THREE.Raycaster, mouse: THREE.Vector2): boolean {
     raycaster.layers.set(1);
-    const intersects = raycaster.intersectObject(this.surfaces[0]);
+    const intersects = raycaster.intersectObject(this.surface);
     return !!intersects.length;
     // console.log(this.surfaces[0], mouse);
     // return false;
     // return Math.abs(mouse.x) <= this.radius && Math.abs(mouse.y) <= this.radius;
+  }
+
+  private tickSpin(speedFactor: number) {
+    this.surface.rotation.x += this.spin.xSpeed * speedFactor;
+    this.surface.rotation.y += this.spin.ySpeed * speedFactor;
+    this.surface.rotation.z += this.spin.zSpeed * speedFactor;
   }
 
   private addLensflares(scene: THREE.Scene, camera: THREE.PerspectiveCamera, light: THREE.AmbientLight) {
@@ -175,18 +172,15 @@ export class Star extends Luminary {
   }
 
   private addSurface(scene: THREE.Scene) {
-    this.surfaces = [];
-    const starGeometry = new THREE.SphereGeometry(this.size, 32, 32);
-    const starMesh: ISurfaceMesh = new THREE.Mesh(starGeometry, Star.starMaterial);
-    starMesh.layers.set(1);
-    starMesh.position.x = this.position.x;
-    starMesh.position.y = this.position.y;
-    starMesh.position.z = this.position.z;
-    starMesh.xStep = 0;
-    starMesh.yStep = 0.001;
-    starMesh.zStep = 0;
-    this.surfaces.push(starMesh);
-    scene.add(starMesh);
+    const starGeometry = new THREE.SphereGeometry(1, 32, 32);
+    this.surface = new THREE.Mesh(starGeometry, Star.starMaterial);
+    this.surface.rotation.set(Math.PI / 2, 0, 0);
+    this.surface.scale.multiplyScalar(this.size);
+    this.surface.layers.set(1);
+    this.surface.position.x = this.position.x;
+    this.surface.position.y = this.position.y;
+    this.surface.position.z = this.position.z;
+    scene.add(this.surface);
 
     // const cloudMesh: ISurfaceMesh = new THREE.Mesh(new THREE.SphereGeometry(this.size, 32, 32), Star.cloudMaterial);
     // cloudMesh.layers.set(1);
@@ -255,14 +249,6 @@ export class Star extends Luminary {
     scene.add(glow);
   }
 
-  private updateSurface() {
-    this.surfaces.forEach(starMesh => {
-      starMesh.rotation.x += starMesh.xStep;
-      starMesh.rotation.y += starMesh.yStep;
-      starMesh.rotation.z += starMesh.zStep;
-    });
-  }
-
   private updateLensFlares(scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
     this.lensflares.forEach(lf => {
       if (!lf.display && lf.time < Date.now()) {
@@ -288,6 +274,10 @@ export class Star extends Luminary {
       }
       lf.lookAt(camera.position);
     });
+  }
+
+  protected sizeUpdated() {
+    this.surface.scale.setScalar(this.size);
   }
 
 }

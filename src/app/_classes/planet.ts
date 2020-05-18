@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { propertyMap } from 'model-mapper';
-import { Luminary } from './luminary';
+import { Luminary, Spin } from './luminary';
 
 export class Orbit {
 
@@ -27,19 +27,6 @@ export class Orbit {
 
   public path: THREE.EllipseCurve;
   public move = 0;
-
-}
-
-export class Spin {
-
-  @propertyMap({ default: 0 })
-  public xSpeed = 0;
-
-  @propertyMap({ default: 0.0005 })
-  public ySpeed = 0.0005;
-
-  @propertyMap({ default: 0 })
-  public zSpeed = 0;
 
 }
 
@@ -73,14 +60,8 @@ export class Planet extends Luminary {
   @propertyMap()
   public glowColor: string;
 
-  @propertyMap({ default: 10 })
-  public size = 10;
-
   @propertyMap({ type: Orbit })
   public orbit: Orbit;
-
-  @propertyMap({ type: Spin })
-  public spin: Spin;
 
   private parent: Luminary;
   private surface: THREE.Mesh;
@@ -159,9 +140,12 @@ export class Planet extends Luminary {
     materialData.specular = new THREE.Color('grey');
 
     this.surface = new THREE.Mesh(
-      new THREE.SphereGeometry(this.size, 32, 32),
+      // new THREE.SphereGeometry(this.size, 32, 32),
+      new THREE.SphereGeometry(1, 32, 32),
       new THREE.MeshPhongMaterial(materialData)
     );
+    this.surface.rotation.set(Math.PI / 2, 0, 0.1);
+    this.surface.scale.multiplyScalar(this.size);
     this.surface.castShadow = true;
     this.surface.receiveShadow = true;
     scene.add(this.surface);
@@ -169,10 +153,11 @@ export class Planet extends Luminary {
     new THREE.TextureLoader().load(`assets/images/planets/${this.source}/clouds.png`,
       texture => {
         this.clouds = new THREE.Mesh(
-          new THREE.SphereGeometry(this.size + 0.03, 32, 32),
+          new THREE.SphereGeometry(1, 32, 32),
           new THREE.MeshPhongMaterial({ map: texture, transparent: true }));
-        this.surface.castShadow = true;
-        this.surface.receiveShadow = true;
+        this.clouds.scale.multiplyScalar(this.size + 0.03);
+        this.clouds.castShadow = true;
+        this.clouds.receiveShadow = true;
         scene.add(this.clouds);
       },
       undefined,
@@ -195,11 +180,8 @@ export class Planet extends Luminary {
         blending: THREE.AdditiveBlending,
         transparent: true
       });
-    this.glow = new THREE.Mesh(new THREE.SphereGeometry(this.size + 0.1, 32, 32), customMaterial);
-    // this.glow = new THREE.Mesh(
-    //   new THREE.SphereGeometry(this.size + 0.2, 32, 32),
-    //   new THREE.MeshBasicMaterial({})
-    // );
+    this.glow = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), customMaterial);
+    this.glow.scale.multiplyScalar(this.size + 0.1);
     scene.add(this.glow);
   }
 
@@ -219,6 +201,12 @@ export class Planet extends Luminary {
     point.setX(point.x + this.ellipse.position.x);
     point.setY(point.y + this.ellipse.position.y);
     this.updatePosition(point.x, point.y, 0);
+  }
+
+  protected sizeUpdated() {
+    this.surface.scale.setScalar(this.size);
+    if (this.clouds) { this.clouds.scale.setScalar(this.size + 0.03); }
+    if (this.glow) { this.glow.scale.setScalar(this.size + 0.1); }
   }
 
 }

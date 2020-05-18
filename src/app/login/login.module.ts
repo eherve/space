@@ -9,11 +9,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoginPageRoutingModule } from './login-routing.module';
 import { SafePipeModule } from 'safe-pipe';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [LoginPage],
   imports: [
     CommonModule,
+    MatFormFieldModule,
     ReactiveFormsModule,
     LoginPageRoutingModule,
     TranslateModule.forChild(),

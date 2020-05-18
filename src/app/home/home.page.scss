@@ -6,10 +6,32 @@
   padding: 8px;
   border: 1px solid #eee;
   border-radius: 8px;
-  width: 128px;
+  width: 180px;
   height: 256px;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   color: white;
+
+  .placeholder {
+    color: rgba(255, 255, 255, 0.54);
+    font-size: 19px;
+    transform-origin: 0 0;
+    transform: scale(0.75) perspective(100px) translateZ(0.001px);
+  }
+
+  .checkbox {
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+
+  .slider {
+    mat-label {
+      position: absolute;
+    }
+  }
+
+  // mat-slider.mat-slider {
+  //   top: -16px;
+  // }
 }
 
 .container {

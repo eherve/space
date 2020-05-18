@@ -23,6 +23,9 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 // that you are using.
 @include angular-material-theme($app-theme);
 
+@import '_color-theme';
+@include app-color-theme($app-theme);
+
 @import '_header-theme';
 @include app-header-theme($app-theme);
 

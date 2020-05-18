@@ -1,6 +1,34 @@
 <div fxLayout="row">
-  <div class="info" *ngIf="selected">
-    {{selected.name}}
+  <div class="info">
+
+    <div class="scene" fxLayout="column">
+      <div class="checkbox" fxLayoutAlign="start center" fxLayoutGap="8px"
+        (click)="sceneDebugControl.setValue(!sceneDebugControl.value)" matRipple>
+        <mat-icon *ngIf="sceneDebugControl.value">check_box</mat-icon>
+        <mat-icon *ngIf="!sceneDebugControl.value">check_box_outline_blank</mat-icon>
+        <mat-label translate>scene-debug</mat-label>
+      </div>
+      <div class="slider" fxLayout="column">
+        <mat-label class="placeholder" translate>scene-speed</mat-label>
+        <mat-slider track-bg="white" active-color="primary" min="0" max="10" step="1" thumbLabel
+          [value]="sceneSpeedControl.value" (input)="sceneSpeedControl.setValue($event.value)">
+        </mat-slider>
+      </div>
+    </div>
+
+    <div *ngIf="selected" class="selected" fxLayout="column">
+      <mat-form-field color="white">
+        <mat-label translate>luminary-name</mat-label>
+        <input matInput [formControl]="luminaryNameControl">
+      </mat-form-field>
+      <div class="slider" fxLayout="column">
+        <mat-label class="placeholder" translate>luminary-size</mat-label>
+        <mat-slider track-bg="white" active-color="primary" min="0.1" max="20" step="0.1" thumbLabel
+          [value]="luminarySizeControl.value" (input)="luminarySizeControl.setValue($event.value)">
+        </mat-slider>
+      </div>
+    </div>
+
   </div>
   <div #container class="container">
   </div>

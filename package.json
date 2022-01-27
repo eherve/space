@@ -32,7 +32,7 @@
     "moment": "^2.24.0",
     "rxjs": "~6.5.5",
     "safe-pipe": "^1.0.3",
-    "three": "^0.116.1",
+    "three": "^0.137.0",
     "three-orbit-controls": "^82.1.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
